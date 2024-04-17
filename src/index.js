@@ -427,8 +427,8 @@ export default class ScrollBooster {
 
             // get dragDirection if offset threshold is reached
             if (
-                (Math.abs(this.clientOffset.x) > 5 && !dragDirection) ||
-                (Math.abs(this.clientOffset.y) > 5 && !dragDirection)
+                !dragDirection
+                && (Math.abs(this.clientOffset.x) > 5 || Math.abs(this.clientOffset.y) > 5)
             ) {
                 dragDirection = this.getDragDirection(
                     this.getDragAngle(this.clientOffset.x, this.clientOffset.y),
@@ -437,17 +437,14 @@ export default class ScrollBooster {
             }
 
             // prevent scroll if not expected scroll direction
-            if (this.props.lockScrollOnDragDirection && this.props.lockScrollOnDragDirection !== 'all') {
-                if (dragDirection === this.props.lockScrollOnDragDirection && isTouch) {
-                    this.dragPosition.x = this.dragStartPosition.x + this.dragOffset.x;
-                    this.dragPosition.y = this.dragStartPosition.y + this.dragOffset.y;
-                } else if (!isTouch) {
-                    this.dragPosition.x = this.dragStartPosition.x + this.dragOffset.x;
-                    this.dragPosition.y = this.dragStartPosition.y + this.dragOffset.y;
-                } else {
-                    this.dragPosition.x = this.dragStartPosition.x;
-                    this.dragPosition.y = this.dragStartPosition.y;
-                }
+            if (
+                isTouch
+                && this.props.lockScrollOnDragDirection 
+                && this.props.lockScrollOnDragDirection !== 'all' 
+                && this.props.lockScrollOnDragDirection !== dragDirection
+            ) {
+                this.dragPosition.x = this.dragStartPosition.x;
+                this.dragPosition.y = this.dragStartPosition.y;
             } else {
                 this.dragPosition.x = this.dragStartPosition.x + this.dragOffset.x;
                 this.dragPosition.y = this.dragStartPosition.y + this.dragOffset.y;
